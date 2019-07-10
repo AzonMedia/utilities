@@ -12,14 +12,14 @@ class GeneralUtil
      * Does not validate is it really a valid callable but only treats the provided argument as callable and hashes it.
      * Because of this the signature is not enforced to callable
      *
-     * @param callable $callable
+     * @param callable|object $callable
      * @return string md5 hash
      *
      * @author vesko@azonmedia.com
      * @created 20.03.2019
      * @since 0.7.7.1
      */
-    public static function get_callable_hash(callable $callable): string
+    public static function get_callable_hash(object $callable): string
     {
         if (is_string($callable)) {
             $hash = md5($callable);
