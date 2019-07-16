@@ -4,7 +4,7 @@
 namespace Azonmedia\Utilities;
 
 
-class AlphaNumUtil
+abstract class AlphaNumUtil
 {
     /**
      * Converts the provided value to a string no matter what is provided.
@@ -17,7 +17,7 @@ class AlphaNumUtil
      * @created 22.10.2018
      * @since 0.7.4
      */
-    public static function as_string($value): string
+    public static function as_string( /* mixed */ $value): string
     {
         $string_max_length = 100;
         $max_array_depth = 10;

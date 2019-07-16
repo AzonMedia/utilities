@@ -5,7 +5,7 @@ namespace Azonmedia\Utilities;
 
 use InvalidArgumentException;
 
-class GeneralUtil
+abstract class GeneralUtil
 {
     /**
      * Returns a md5 hash for the callable (the different types of callables are hashed differently).

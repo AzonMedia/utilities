@@ -4,8 +4,25 @@ declare(strict_types=1);
 namespace Azonmedia\Utilities;
 
 
-class StackTraceUtil
+abstract class StackTraceUtil
 {
+
+    /**
+     * Returns the stackframe by the provided index.
+     * Returns an empty array if not found.
+     * @param int $index
+     * @return array
+     */
+    public static function get_stack_frame(int $index) : array
+    {
+        $bt = self::get_backtrace();
+        $ret = [];
+        if (isset($bt[$index])) {
+            $ret = $bt[$index];
+        }
+        return $ret;
+    }
+
     /**
      * Looks backwards in the stack for the provided class and/or method name and returns the data
      * Optionally accepts a third argument with backtrace data
@@ -13,25 +30,25 @@ class StackTraceUtil
      * @param string $method
      * @param array $bt Backtrace data
      * @param int $frame_offset To look for frames after the found one (positive number) or frames before it (negative number). Defaults to 0 (to return the frame found).
-     * @return array Returns empty array if not found
+     * @return array Returns NULL if not found
      * @example k::get_stack_frame_by('classname','methodname', $exception->getTrace())
      * If not provided it gets the current backtrace internally.
      */
     public static function get_stack_frame_by(string $class = '', string $method = '', array $bt = array(), int $frame_offset = 0): array
     {
         if (!$class && !$method) {
-            throw new \RuntimeException(sprintf('Neither $class nor $method was provided to get_stack_frame_by.'));
+            throw new \RuntimeException(sprintf('Neither $class nor $method was provided to %s.'), __METHOD__);
         }
         if (!is_string($class)) {
-            throw new \RuntimeException('The provided $class to get_stack_frame_by must be string. Instead "%s" was provided.', gettype($class));
+            throw new \RuntimeException('The provided $class to %s must be string. Instead "%s" was provided.', __METHOD__, gettype($class));
         }
         if (!is_string($method)) {
-            throw new \RuntimeException('The provided $method to get_stack_frame_by must be string. Instead "%s" was provided.', gettype($method));
+            throw new \RuntimeException('The provided $method to %s must be string. Instead "%s" was provided.', __METHOD__, gettype($method));
         }
         if (!$bt) {
             $bt = self::get_backtrace();
         }
-        $ret = array();
+        $ret = [];
 
         //foreach ($bt as $frame) {
         for ($aa = 0; $aa < count($bt); $aa++) {

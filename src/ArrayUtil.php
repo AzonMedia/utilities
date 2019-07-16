@@ -4,7 +4,7 @@
 namespace Azonmedia\Utilities;
 
 
-class ArrayUtil
+abstract class ArrayUtil
 {
 
 }

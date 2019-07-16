@@ -4,7 +4,7 @@
 namespace Azonmedia\Utilities;
 
 
-class DateTimeUtil
+abstract class DateTimeUtil
 {
 
 }
