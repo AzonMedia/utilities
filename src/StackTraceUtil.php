@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Azonmedia\Utilities;
 
-
 abstract class StackTraceUtil
 {
 
@@ -19,6 +18,53 @@ abstract class StackTraceUtil
         $ret = [];
         if (isset($bt[$index])) {
             $ret = $bt[$index];
+        }
+        return $ret;
+    }
+
+    /**
+     * @param int $frame
+     * @return array
+     */
+    public static function get_caller(int $frame = 3) : array
+    {
+        $bt = self::get_backtrace();
+        $class = $bt[$frame]['class'] ?? NULL;
+        $method = $bt[$frame]['function'] ?? NULL;
+        return [$class, $method];
+    }
+
+    /**
+     * Validates the caller and throws exception if the caller is not the expected one.
+     * Can be used to protect public methods.
+     * @throws \InvalidArgumentException
+     * @throws \BadMethodCallException
+     * @param string $expected_class
+     * @param string $expected_method
+     * @param bool $throw_exception If set to FALSE then boolean result will be returned instead.
+     * @return bool
+     */
+    public static function validate_caller(string $expected_class, string $expected_method, $throw_exception = TRUE) : bool
+    {
+
+        if (!$expected_class && !$expected_method) {
+            throw new \InvalidArgumentException(sprintf('%s() expects at least one of the arguments to be provided.'));
+        }
+
+        list($class, $method) = self::get_caller(4);
+
+        $ret = TRUE;
+        if ($expected_class && !is_a($class, $expected_class, TRUE)) {
+            $ret = FALSE;
+        }
+        if ($expected_method && $expected_method !== $method) {
+            $ret = FALSE;
+        }
+        if (!$ret && $throw_exception) {
+            //print_r(self::get_backtrace());
+            $frame = self::get_stack_frame(3);
+            $called_from_str =  ( $expected_class ? : '*' ).'::'.( $expected_method ? : '*' ).'()';
+            throw new \BadMethodCallException(sprintf('%s::%s() can be called only from %s. It was called from %s::%s().', $frame['class'], $frame['function'], $called_from_str, $class, $method ));
         }
         return $ret;
     }
@@ -97,8 +143,8 @@ abstract class StackTraceUtil
      */
     public static function get_backtrace(): iterable
     {
-        ini_set('memory_limit', '2048M');
-        return self::simplify_trace(debug_backtrace());
+        //ini_set('memory_limit', '2048M');
+        return self::simplify_trace(debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS));
     }
 
     /**
