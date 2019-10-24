@@ -44,4 +44,6 @@ abstract class GeneralUtil
 
         return $hash;
     }
+
+    
 }

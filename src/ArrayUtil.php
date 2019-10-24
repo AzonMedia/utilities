@@ -52,4 +52,13 @@ abstract class ArrayUtil
         $func($array);
         return $str;
     }
+
+    public static function prefix_keys(array $array, string $prefix) : array
+    {
+        $ret = [];
+        foreach ($array as $key=>$value) {
+            $ret[$prefix.$key] = $value;
+        }
+        return $ret;
+    }
 }
