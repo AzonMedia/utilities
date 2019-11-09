@@ -6,7 +6,8 @@ namespace Azonmedia\Utilities;
 /**
  * Class SysUtil
  * @package Azonmedia\Utilities
- * Currently works only on Linux
+ * Currently works only on Linux.
+ * If a method can not determine the info returns NULL.
  */
 abstract class SysUtil
 {
@@ -40,7 +41,11 @@ abstract class SysUtil
         return $ret;
     }
 
-    public static function get_cpu_cores() : ?int
+    /**
+     * Returns the number of CPU threads.
+     * @return int|null
+     */
+    public static function get_cpu_threads() : ?int
     {
         $ret = NULL;
         $contents = file_get_contents('/proc/cpuinfo');
@@ -51,7 +56,11 @@ abstract class SysUtil
         return $ret;
     }
 
-    public static function get_cpu_physical_cores() : ?int
+    /**
+     * Returns the physical number of CPU cores.
+     * @return int|null
+     */
+    public static function get_cpu_cores() : ?int
     {
         $ret = NULL;
         $contents = file_get_contents('/proc/cpuinfo');
@@ -62,13 +71,17 @@ abstract class SysUtil
         return $ret;
     }
 
+    /**
+     * Returns TRUE if hyperthreading is enabled.
+     * @return bool|null
+     */
     public static function hyperthreading_enabled() : ?bool
     {
         $ret = NULL;
+        $cpu_threads = self::get_cpu_threads();
         $cpu_cores = self::get_cpu_cores();
-        $cpu_physical_cores = self::get_cpu_physical_cores();
-        if ($cpu_cores && $cpu_physical_cores) {
-            if ($cpu_physical_cores < $cpu_cores) {
+        if ($cpu_threads && $cpu_cores) {
+            if ($cpu_cores < $cpu_threads) {
                 $ret = TRUE;
             } else {
                 $ret = FALSE;
@@ -77,13 +90,17 @@ abstract class SysUtil
         return $ret;
     }
 
+    /**
+     * Returns a string with basic host info: CPU model, cores, threads, RAM
+     * @return string
+     */
     public static function get_basic_sysinfo() : string
     {
         $str = '';
         $ram = self::get_system_ram();
         $str .= 'CPU: '.(self::get_cpu_model() ?? 'Unknown');
-        $str .= ' Physical Cores: '.(self::get_cpu_physical_cores() ?? 'Unknown');
         $str .= ' Cores: '.(self::get_cpu_cores() ?? 'Unknown');
+        $str .= ' Threads: '.(self::get_cpu_threads() ?? 'Unknown');
         $str .= ' Memory: '.($ram ? round( $ram / (1024 * 1024), 2 ).'GB' : 'Unknown');
         return $str;
     }
