@@ -45,5 +45,10 @@ abstract class GeneralUtil
         return $hash;
     }
 
+    public static function is_uuid(/* scalar */ $id) : bool
+    {
+        return strlen($id) === 36 ;
+    }
+
     
 }
