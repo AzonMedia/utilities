@@ -6,24 +6,48 @@ namespace Azonmedia\Utilities;
 
 abstract class ArrayUtil
 {
+
     /**
+     * Similar to validate_array but throws exception on first error.
+     * @throws \InvalidArgumentException
+     * @param array $data_array
+     * @param array $reference_array
+     */
+    public static function check_array(array $data_array, array $reference_array) : void
+    {
+        self::validate_array($data_array, $reference_array, $errors);
+        if (count($errors)) {
+            throw new \InvalidArgumentException(implode(' ', $errors));
+        }
+    }
+
+    /**
+     * Validates an array against a reference array.
+     * If the provided array has more keys than the reference one it fails.
+     * If the provided array has less keys than the reference one it is not considered a failure.
      * @param array $data_array
      * @param array $reference_array
      * @return bool
      */
-    public static function validate_array(array $data_array, array $reference_array) : bool
+    public static function validate_array(array $data_array, array $reference_array, ?array &$errors = []) : bool
     {
         $ret = TRUE;
+//        if ($errors !== NULL) {
+//            throw new \InvalidArgumentException(sprintf('The $errors argument must be NULL. %s provided instead.', gettype($errors) ));
+//        }
+        $errors = [];
         foreach ($data_array as $key=>$value) {
             if (!array_key_exists($key, $reference_array)) {
+                $errors[] = sprintf('The provided array contains an unsupported key %s.', $key);
                 $ret = FALSE;
                 break;
             } elseif (is_array($value)) {
-                $ret = self::validate_array($value, $reference_array[$key]);
+                $ret = self::validate_array($value, $reference_array[$key], $errors);
                 if (!$ret) {
                     break;
                 }
             } elseif (!TypesUtil::validate_type($value, $reference_array[$key])) {
+                $errors[] = sprintf('The key %s is of incorrect type.', $key);
                 $ret = FALSE;
                 break;
             }
