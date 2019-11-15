@@ -85,4 +85,22 @@ abstract class ArrayUtil
         }
         return $ret;
     }
+
+    /**
+     * Returns an array that contains only the specified keys
+     * @param array $array
+     * @param array $keys
+     * @return array
+     */
+    public static function extract_keys(array $array, array $keys) : array
+    {
+        $ret = [];
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $array)) {
+                throw new \InvalidArgumentException(sprintf('The provided array does not contain key %s.', $key));
+            }
+            $ret[$key] = $array[$key];
+        }
+        return $ret;
+    }
 }
