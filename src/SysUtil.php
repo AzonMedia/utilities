@@ -23,7 +23,7 @@ abstract class SysUtil
         while ($line = fgets($fh)) {
             $pieces = array();
             if (preg_match('/^MemTotal:\s+(\d+)\skB$/', $line, $pieces)) {
-                $mem = $pieces[1];
+                $mem = (int) $pieces[1];
                 break;
             }
         }
@@ -52,7 +52,7 @@ abstract class SysUtil
         $contents = file_get_contents('/proc/cpuinfo');
         preg_match('/siblings.*: ([0-9]*)/', $contents, $matches);
         if (isset($matches[1])) {
-            $ret = $matches[1];
+            $ret = (int) $matches[1];
         }
         return $ret;
     }
@@ -67,7 +67,7 @@ abstract class SysUtil
         $contents = file_get_contents('/proc/cpuinfo');
         preg_match('/cores.*: ([0-9]*)/', $contents, $matches);
         if (isset($matches[1])) {
-            $ret = $matches[1];
+            $ret = (int) $matches[1];
         }
         return $ret;
     }
