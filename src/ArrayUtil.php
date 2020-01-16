@@ -103,4 +103,22 @@ abstract class ArrayUtil
         }
         return $ret;
     }
+
+
+    /**
+     * Returns the array structure but without the values
+     * @return array
+     */
+    public static function array_keys_recursive(array $array) : array
+    {
+        $keys = [];
+        foreach ($array as $key=>$value) {
+            if (is_array($value)) {
+                $keys[$key] = self::array_keys_recursive($value);
+            } else {
+                $keys[$key] = NULL;
+            }
+        }
+        return $keys;
+    }
 }

@@ -6,6 +6,9 @@ namespace Azonmedia\Utilities;
 
 abstract class AlphaNumUtil
 {
+
+    public const INDENTATION_LENGTH = 4;
+
     /**
      * Converts the provided value to a string no matter what is provided.
      * To be used in error messages.
@@ -64,6 +67,23 @@ abstract class AlphaNumUtil
             $ret .= ' (object)';
         }
 
+        return $ret;
+    }
+
+    /**
+     * @param string $string
+     * @param int $indentation Number of indentations
+     * @param int $indentation_length Size of a single indent
+     * @return string
+     */
+    public static function indent(string $string, $indentation = 1, $indentation_length = self::INDENTATION_LENGTH) : string
+    {
+        $ret = '';
+        $lines = explode(PHP_EOL, $string);
+        foreach ($lines as $line) {
+            $ret .= str_repeat(' ',$indentation * $indentation_length).$line.PHP_EOL;
+        }
+        $ret = substr($ret, 0, -strlen(PHP_EOL));
         return $ret;
     }
 }
