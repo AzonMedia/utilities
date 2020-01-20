@@ -47,7 +47,8 @@ abstract class GeneralUtil
 
     public static function is_uuid(/* scalar */ $id) : bool
     {
-        return strlen($id) === 36 ;
+        //TODO - improve
+        return is_string($id) && strlen($id) === 36 && preg_match('/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/', $id);
     }
 
     
