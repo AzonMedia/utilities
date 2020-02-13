@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
-
 namespace Azonmedia\Utilities;
+
+use Azonmedia\Translator\Translator as t;
 
 /**
  * Class SysUtil
@@ -99,10 +100,14 @@ abstract class SysUtil
     {
         $str = '';
         $ram = self::get_system_ram();
-        $str .= 'CPU: '.(self::get_cpu_model() ?? 'Unknown');
-        $str .= ' Cores: '.(self::get_cpu_cores() ?? 'Unknown');
-        $str .= ' Threads: '.(self::get_cpu_threads() ?? 'Unknown');
-        $str .= ' Memory: '.($ram ? round( $ram / (1024 * 1024), 2 ).'GB' : 'Unknown');
+        //$str .= 'CPU: '.(self::get_cpu_model() ?? 'Unknown');
+        $str .= sprintf(t::_('CPU: %s'), self::get_cpu_model() ?? t::_('Unknown'));
+        //$str .= ' Cores: '.(self::get_cpu_cores() ?? 'Unknown');
+        $str .= ' '.sprintf(t::_('Cores: %s'), self::get_cpu_cores() ?? t::_('Unknown'));
+        //$str .= ' Threads: '.(self::get_cpu_threads() ?? 'Unknown');
+        $str .= ' '.sprintf(t::_('Threads: %s'), self::get_cpu_threads() ?? t::_('Unknown'));
+        //$str .= ' Memory: '.($ram ? round( $ram / (1024 * 1024), 2 ).'GB' : 'Unknown');
+        $str .=  ' '.sprintf(t::_('Memory: %s GB'), $ram ? round( $ram / (1024 * 1024), 2 ).'GB' : t::_('Unknown') );
         return $str;
     }
 }

@@ -1,0 +1,27 @@
+{
+    "package": "azonmedia/utilities",
+    "source_language": "en",
+    "translations": [
+        {
+            "en": "CPU: %s",
+            "bg": "Процесор: %s"
+        },
+        {
+            "en": "Cores: %s",
+            "bg": "Ядра: %s"
+        },
+        {
+            "en": "Threads: %s",
+            "bg": "Нишки: %s"
+        },
+        {
+            "en": "Memory: %s GB",
+            "bg": "Памет: %s ГБ"
+        },
+        {
+            "en": "Unknown",
+            "bg": "Неизвестно"
+        }
+    ]
+
+}
