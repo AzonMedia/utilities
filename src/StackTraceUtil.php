@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Azonmedia\Utilities;
 
+use Azonmedia\Patterns\ScopeReference;
+
 abstract class StackTraceUtil
 {
 
@@ -160,5 +162,33 @@ abstract class StackTraceUtil
             unset($call['args']);
         }
         return $debug_trace;
+    }
+
+    /**
+     * Checks the provided backtrace for a frame containing @see ScopeReference::__destruct() and if found checks was it triggered by a throw statement.
+     * @param array $backtrace
+     * @return bool
+     */
+    public static function check_stack_for_scope_ref_destruct_due_throw(array $backtrace = []): bool
+    {
+        $ret = FALSE;
+        if (!$backtrace) {
+            $backtrace = self::get_backtrace();
+        }
+        foreach ($backtrace as $frame) {
+            $class = $frame['class'] ?? '';
+            $function = $frame['function'] ?? '';
+            if ($class && is_a($class, ScopeReference::class, TRUE) && $function === '__destruct') {
+                //a scope reference destructor is found
+                //check the given line for a throw statement
+                $lines = file($frame['file']);
+                $line = trim($lines[$frame['line'] - 1]);
+                if (stripos($line, 'throw') === 0) {
+                    $ret = TRUE;
+                }
+                break;
+            }
+        }
+        return $ret;
     }
 }
