@@ -45,11 +45,38 @@ abstract class GeneralUtil
         return $hash;
     }
 
+    /**
+     * Checks the provided scalar is it UUID.
+     * @param $id
+     * @return bool
+     */
     public static function is_uuid(/* scalar */ $id) : bool
     {
         //TODO - improve
         return is_string($id) && strlen($id) === 36 && preg_match('/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/', $id);
     }
 
+    /**
+     * Returns just the class name without the namespace from the provided class or object.
+     * @param $class
+     * @return string
+     */
+    public static function get_class_name( /* string|object */ $class): string
+    {
+        $class_name = '';
+        if (is_string($class)) {
+            //do nothing
+        } elseif (is_object($class)) {
+            $class = get_class($class);
+        } else {
+            throw new InvalidArgumentException(sprintf('The %1s() method accepts only strings (class names) or objects. %2s is provided.', __METHOD__, gettype($class) ));
+        }
+        if (FALSE !== ($pos = strrpos($class, "\\"))) {
+            $class_name = substr($class, $pos + 1);
+        } else {
+            $class_name = $class;
+        }
+        return $class_name;
+    }
     
 }
