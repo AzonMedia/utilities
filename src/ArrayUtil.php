@@ -27,6 +27,7 @@ abstract class ArrayUtil
      * If the provided array has less keys than the reference one it is not considered a failure.
      * @param array $data_array
      * @param array $reference_array
+     * @param array|null $errors
      * @return bool
      */
     public static function validate_array(array $data_array, array $reference_array, ?array &$errors = []) : bool

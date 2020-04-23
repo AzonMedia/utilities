@@ -69,7 +69,7 @@ abstract class GeneralUtil
         } elseif (is_object($class)) {
             $class = get_class($class);
         } else {
-            throw new InvalidArgumentException(sprintf('The %1s() method accepts only strings (class names) or objects. %2s is provided.', __METHOD__, gettype($class) ));
+            throw new InvalidArgumentException(sprintf('The %1$s() method accepts only strings (class names) or objects. %2$s is provided.', __METHOD__, gettype($class) ));
         }
         if (FALSE !== ($pos = strrpos($class, "\\"))) {
             $class_name = substr($class, $pos + 1);
