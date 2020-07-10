@@ -63,7 +63,6 @@ abstract class StackTraceUtil
             $ret = FALSE;
         }
         if (!$ret && $throw_exception) {
-            //print_r(self::get_backtrace());
             $frame = self::get_stack_frame(3);
             $called_from_str =  ( $expected_class ? : '*' ).'::'.( $expected_method ? : '*' ).'()';
             throw new \BadMethodCallException(sprintf('%s::%s() can be called only from %s. It was called from %s::%s().', $frame['class'], $frame['function'], $called_from_str, $class, $method ));
