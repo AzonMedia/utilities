@@ -124,12 +124,12 @@ abstract class ArrayUtil
     }
 
     /**
-     * Removes the columns matching $column_name_regex from a two-dimensional $data array.
+     * Removes array columns matching $column_name_regex from a two-dimensional $data array.
      * @param string $data
      * @param string $column_name_regex
      * @return array
      */
-    public static function remove_columns_by_name(string $data, string $column_name_regex) : array
+    public static function remove_columns_by_name(array $data, string $column_name_regex) : array
     {
         $ret = [];
         foreach ($data as $row) {
