@@ -7,6 +7,8 @@ namespace Azonmedia\Utilities;
 abstract class ArrayUtil
 {
 
+    public const REMOVE_COLUMN_REGEX = '/.*_id|.*_password/';
+
     /**
      * Similar to validate_array but throws exception on first error.
      * @throws \InvalidArgumentException
@@ -129,7 +131,7 @@ abstract class ArrayUtil
      * @param string $column_name_regex
      * @return array
      */
-    public static function remove_columns_by_name(array $data, string $column_name_regex) : array
+    public static function remove_columns_by_name(array $data, string $column_name_regex = self::REMOVE_COLUMN_REGEX) : array
     {
         $ret = [];
         foreach ($data as $row) {
@@ -142,5 +144,50 @@ abstract class ArrayUtil
             $ret[] = $new_row;
         }
         return $ret;
+    }
+
+    /**
+     * Adds a _formatted column for each column that appears to be a unix timestamp (10 digits)
+     * @param array $data
+     * @param string $datetime_format
+     * @return array
+     */
+    public static function add_formatted_datetime(array $data, string $datetime_format): array
+    {
+        foreach ($data as &$_row) {
+            foreach ($_row as $column_name => $column_data) {
+                if ( ctype_digit( (string) $column_data) && strlen( (string) $column_data) === 10 ) {
+                    //assume this is a timestamp
+                    $time = $column_data;
+                    $_row[$column_name.'_formatted'] = date($datetime_format, $time);
+                } elseif ( ctype_digit( (string) $column_data) && strlen( (string) $column_data) === 16 ) {
+                    //this is a microtime * 1_000_000
+                    $time = (int) ($column_data / 1_000_000);
+                    $_row[$column_name.'_formatted'] = date($datetime_format, $time);
+                } elseif (is_numeric($column_data) && strlen((string) $column_data) === 15) {
+                    //this is microtime(true) - float
+                    $time = (int) $column_data;
+                    $_row[$column_name.'_formatted'] = date($datetime_format, $time);
+                }
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * Prepares the provided $data array for serving over API.
+     * Uses:
+     * @see self::remove_columns_by_name()
+     * @see self::add_formatted_datetime()
+     * @param array $data
+     * @param string $remove_by_column_name_regex
+     * @param string $add_column_with_datetime_format
+     * @return array
+     */
+    public static function frontify(array $data, string $add_column_with_datetime_format, string $remove_by_column_name_regex = self::REMOVE_COLUMN_REGEX): array
+    {
+        $data = self::remove_columns_by_name($data, $remove_by_column_name_regex);
+        $data = self::add_formatted_datetime($data, $add_column_with_datetime_format);
+        return $data;
     }
 }
