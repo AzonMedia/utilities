@@ -4,7 +4,7 @@
     "description": "Various utilities",
     "keywords": ["utility"],
     "homepage": "https://github.com/AzonMedia/utilities",
-    "license": "BSD-3-Clause",
+    "license": "MIT",
     "authors": [
         {
             "name": "Vesko Kenashkov",
