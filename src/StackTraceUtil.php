@@ -168,12 +168,17 @@ abstract class StackTraceUtil
      * @param array $backtrace
      * @return bool
      */
+    //ths appears no longer works as the scope destructio nis reported to be at the line where the method is called
+    //and not within the method on the line where the exception was thrown
+    //There is broken behaviour on 7.4.6 (works on 7.2)
+    //@see https://bugs.php.net/bug.php?id=79885
     public static function check_stack_for_scope_ref_destruct_due_throw(array $backtrace = []): bool
     {
         $ret = FALSE;
         if (!$backtrace) {
             $backtrace = self::get_backtrace();
         }
+
         foreach ($backtrace as $frame) {
             $class = $frame['class'] ?? '';
             $function = $frame['function'] ?? '';
