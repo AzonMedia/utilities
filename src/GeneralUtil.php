@@ -79,26 +79,6 @@ abstract class GeneralUtil
         return $class_name;
     }
 
-    public static function check_syntax(string $file_path, ?string &$_error = null): bool
-    {
-        if (!$file_path) {
-            throw new InvalidArgumentException(sprintf('No file_path provided.'));
-        }
-        if (!file_exists($file_path)) {
-            throw new InvalidArgumentException(sprintf('The provided file_path %1$s does not exist.', $file_path));
-        }
-        if (!is_readable($file_path)) {
-            throw new InvalidArgumentException(sprintf('The provided file_path %1$s is not readable.', $file_path));
-        }
-        if (!is_file($file_path)) {
-            throw new InvalidArgumentException(sprintf('The provided file_path %1$s is not a file.', $file_path));
-        }
-        exec("php -l {$file_path}", $output, $exit_code);
-        if ($exit_code === 0) {
-            return true;
-        }
-        $_error = $output[1];//the second line holds the actual error
-        return false;
-    }
+
     
 }
