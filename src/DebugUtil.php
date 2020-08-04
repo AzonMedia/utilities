@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Azonmedia\Utilities;
 
 
-class DebugUtil
+abstract class DebugUtil
 {
     public static function dump_code_with_lines(string $code) : string
     {

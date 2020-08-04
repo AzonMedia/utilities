@@ -6,7 +6,7 @@ namespace Azonmedia\Utilities;
 
 use InvalidArgumentException;
 
-abstract class Source
+abstract class SourceUtil
 {
     public static function check_syntax(string $file_path, ?string &$_error = null): bool
     {
@@ -15,6 +15,7 @@ abstract class Source
         if ($exit_code === 0) {
             return true;
         }
+        
         $_error = $output[1];//the second line holds the actual error
         return false;
     }

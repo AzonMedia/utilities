@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Azonmedia\Utilities;
 
 
-class StringUtil
+abstract class StringUtil
 {
 
     public static function starts_with(string $haystack, string $needle) : bool
