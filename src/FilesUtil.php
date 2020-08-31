@@ -42,4 +42,32 @@ abstract class FilesUtil
         }
         return null;
     }
+
+    /**
+     * Deletes a directory recursively (including hidden files)
+     * @param string $dir
+     */
+    public static function rmdir(string $dir): void
+    {
+        $files = array_diff( scandir($dir), ['.','..'] );
+        foreach ($files as $file) {
+            if (is_dir($dir.'/'.$file)) {
+                self::rmdir($dir.'/'.$file);
+            } else {
+                unlink($dir.'/'.$file);
+            }
+        }
+        rmdir($dir);
+    }
+
+    /**
+     * Removes all files from a directory.
+     * This is done by first deleting recursively the directory (@see self::rmdir()) and then recreating it
+     * @param string $dir
+     */
+    public static function empty_dir(string $dir): void
+    {
+        self::rmdir($dir);
+        mkdir($dir);
+    }
 }
