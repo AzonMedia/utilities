@@ -7,7 +7,7 @@ namespace Azonmedia\Utilities;
 use Azonmedia\Exceptions\RunTimeException;
 use Azonmedia\Translator\Translator as t;
 
-abstract class Crypto
+abstract class CryptoUtil
 {
 
     public const OPENSSL_ENCRYPTION_METHOD = 'AES-256-OFB';//AES-256-CBC
