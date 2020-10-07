@@ -14,6 +14,22 @@ abstract class StringUtil
     public const DEFAULT_CHARACTERS_LIST = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     /**
+     * Replaces the last occurence of a string in the subject.
+     * @param string $search
+     * @param string $replace
+     * @param string $subject
+     * @return mixed|string
+     */
+    public static function str_rreplace(string $search, string $replace, string $subject) {
+        $pos = strrpos($subject, $search);
+
+        if($pos !== false) {
+            $subject = substr_replace($subject, $replace, $pos, strlen($search));
+        }
+        return $subject;
+    }
+
+    /**
      * @param string $haystack
      * @param string $needle
      * @return bool
