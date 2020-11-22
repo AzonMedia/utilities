@@ -135,43 +135,81 @@ abstract class ArrayUtil
     {
         $ret = [];
         foreach ($data as $row) {
-            $new_row = [];
-            foreach ($row as $column_name => $column_data) {
-                if (!preg_match($column_name_regex, $column_name)) {
-                    $new_row[$column_name] = $column_data;
-                }
+            $ret[] = self::remove_columns_by_name_from_row($row, $column_name_regex);
+        }
+        return $ret;
+    }
+
+    public static function remove_columns_by_name_from_row(array $row, string $column_name_regex = self::REMOVE_COLUMN_REGEX): array
+    {
+        $new_row = [];
+        foreach ($row as $column_name => $column_data) {
+            if (!preg_match($column_name_regex, $column_name)) {
+                $new_row[$column_name] = $column_data;
             }
-            $ret[] = $new_row;
+        }
+        return $new_row;
+    }
+
+    /**
+     * Adds a _formatted column for each column in the twodimensional $data array that appears to be a unix timestamp (10 digits)
+     * @param array $data Twodimensional array (rows & columns)
+     * @param string $datetime_format
+     * @return array
+     */
+    public static function add_formatted_datetime(array $data, string $datetime_format): array
+    {
+//        foreach ($data as &$_row) {
+//            foreach ($_row as $column_name => $column_data) {
+//                if ( ctype_digit( (string) $column_data) && strlen( (string) $column_data) === 10 ) {
+//                    //assume this is a timestamp
+//                    $time = $column_data;
+//                    $_row[$column_name.'_formatted'] = date($datetime_format, $time);
+//                } elseif ( ctype_digit( (string) $column_data) && strlen( (string) $column_data) === 16 ) {
+//                    //this is a microtime * 1_000_000
+//                    $time = (int) ($column_data / 1_000_000);
+//                    $_row[$column_name.'_formatted'] = date($datetime_format, $time);
+//                } elseif (is_numeric($column_data) && strlen((string) $column_data) === 15) {
+//                    //this is microtime(true) - float
+//                    $time = (int) $column_data;
+//                    $_row[$column_name.'_formatted'] = date($datetime_format, $time);
+//                }
+//            }
+//        }
+        $ret = [];
+        foreach ($data as $row) {
+            $ret[] = self::add_formatted_datetime_to_row($row, $datetime_format);
         }
         return $ret;
     }
 
     /**
      * Adds a _formatted column for each column that appears to be a unix timestamp (10 digits)
-     * @param array $data
+     * @param array $row One-dimensional array representing a row in dataset (may contain columns which array arrays but these are not processed)
      * @param string $datetime_format
      * @return array
      */
-    public static function add_formatted_datetime(array $data, string $datetime_format): array
+    public static function add_formatted_datetime_to_row(array $row, string $datetime_format): array
     {
-        foreach ($data as &$_row) {
-            foreach ($_row as $column_name => $column_data) {
-                if ( ctype_digit( (string) $column_data) && strlen( (string) $column_data) === 10 ) {
+        $new_row = $row;
+        foreach ($row as $column_name => $column_data) {
+            if (is_scalar($column_data)) {
+                if (ctype_digit((string)$column_data) && strlen((string)$column_data) === 10) {
                     //assume this is a timestamp
                     $time = $column_data;
-                    $_row[$column_name.'_formatted'] = date($datetime_format, $time);
-                } elseif ( ctype_digit( (string) $column_data) && strlen( (string) $column_data) === 16 ) {
+                    $new_row[$column_name . '_formatted'] = date($datetime_format, $time);
+                } elseif (ctype_digit((string)$column_data) && strlen((string)$column_data) === 16) {
                     //this is a microtime * 1_000_000
-                    $time = (int) ($column_data / 1_000_000);
-                    $_row[$column_name.'_formatted'] = date($datetime_format, $time);
-                } elseif (is_numeric($column_data) && strlen((string) $column_data) === 15) {
+                    $time = (int)($column_data / 1_000_000);
+                    $new_row[$column_name . '_formatted'] = date($datetime_format, $time);
+                } elseif (is_numeric($column_data) && strlen((string)$column_data) === 15) {
                     //this is microtime(true) - float
-                    $time = (int) $column_data;
-                    $_row[$column_name.'_formatted'] = date($datetime_format, $time);
+                    $time = (int)$column_data;
+                    $new_row[$column_name . '_formatted'] = date($datetime_format, $time);
                 }
             }
         }
-        return $data;
+        return $new_row;
     }
 
     /**
@@ -179,7 +217,7 @@ abstract class ArrayUtil
      * Uses:
      * @see self::remove_columns_by_name()
      * @see self::add_formatted_datetime()
-     * @param array $data
+     * @param array $data Twodimensional array (rows + columns)
      * @param string $remove_by_column_name_regex
      * @param string $add_column_with_datetime_format
      * @return array
@@ -189,5 +227,18 @@ abstract class ArrayUtil
         $data = self::remove_columns_by_name($data, $remove_by_column_name_regex);
         $data = self::add_formatted_datetime($data, $add_column_with_datetime_format);
         return $data;
+    }
+
+    /**
+     * @param array $row
+     * @param string $add_column_with_datetime_format
+     * @param string $remove_by_column_name_regex
+     * @return array
+     */
+    public static function frontify_row(array $row, string $add_column_with_datetime_format, string $remove_by_column_name_regex = self::REMOVE_COLUMN_REGEX): array
+    {
+        $row = self::remove_columns_by_name_from_row($row, $remove_by_column_name_regex);
+        $row = self::add_formatted_datetime_to_row($row, $add_column_with_datetime_format);
+        return $row;
     }
 }
